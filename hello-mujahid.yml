@@ -46,6 +46,9 @@ kind: Ingress
 metadata:
   name: ingress-hello-mujahid
   namespace: hello-mujahid
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 spec:
   ingressClassName: nginx
   rules:
