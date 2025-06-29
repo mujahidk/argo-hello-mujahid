@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hello-mujahid
+  labels:
+    name: hello-mujahid
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hello-mujahid
+  name: hello-mujahid
+  namespace: hello-mujahid
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-mujahid
+  template:
+    metadata:
+      labels:
+        app: hello-mujahid
+    spec:
+      containers:
+        - image: nginx:latest
+          name: hello-mujahid
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-mujahid-svc
+  namespace: hello-mujahid
+spec:
+  type: ClusterIP
+  selector:
+    app: hello-mujahid
+  ports:
+    - port: 80
+      targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-hello-mujahid
+  namespace: hello-mujahid
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: hello.192.168.2.252.sslip.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hello-mujahid-svc
+                port:
+                  number: 80
